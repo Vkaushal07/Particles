@@ -1,48 +1,48 @@
-#ifndef PARTICLE_H
-#define PARTICLE_H
+#pragma once
 
-#include <SFML/Graphics.hpp>
 #include "Matrices.h"
+#include <SFML/Graphics.hpp>
 #include <vector>
 
-const float PI = 3.14159265359f;
-const float G = 600.0f;       
-const float TTL = 5.0f;       
-const float SCALE = 0.993f;   
+#define M_PI 3.1415926535897932384626433
 
-class Particle : public sf::Drawable {
+const float G = 1000; // Gravity
+const float TTL = 5.0; // Time To Live
+const float SCALE = 0.999;
+
+using namespace Matrices;
+using namespace sf;
+
+class Particle : public Drawable
+{
 public:
-    Particle(sf::RenderTarget& target, int numPoints, sf::Vector2i mouseClickPosition);
-    
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    Particle(RenderTarget& target, int numPoints, Vector2i mouseClickPosition);
+    virtual void draw(RenderTarget& target, RenderStates states) const override;
     void update(float dt);
-    float getTTL() const { return m_ttl; }
+    float getTTL() { return m_ttl; }
 
+    // Functions for unit testing
+    bool almostEqual(double a, double b, double eps = 0.0001);
     void unitTests();
-    bool almostEqual(double a, double b, double eps = 0.001);
 
 private:
-    void rotate(double theta);
-    void scale(double c);
-    void translate(double xShift, double yShift);
-    
-    // Extra Credit: Helper to create smooth rainbow cycles
-    sf::Color HSLtoRGB(float hue, float saturation, float lightness);
-
-    Matrix m_A;
-    int m_numPoints;
     float m_ttl;
+    int m_numPoints;
+    Vector2f m_centerCoordinate;
     float m_radiansPerSec;
     float m_vx;
     float m_vy;
-    sf::Vector2f m_centerCoordinate;
-    sf::Color m_color1;
-    sf::Color m_color2;
-    sf::View m_cartesianPlane;
+    View m_cartesianPlane;
+    Color m_color1;
+    Color m_color2;
+    Matrix m_A;
 
-    // Extra Credit: Structure to store motion blur trails
-    std::vector<sf::Vector2f> m_trailPositions;
+    void rotate(double theta);
+    void scale(double c);
+    void translate(double xShift, double yShift);
+
+    // Extra Credit Properties
+    Color HSLtoRGB(float hue, float saturation, float lightness);
+    std::vector<Vector2f> m_trailPositions;
     size_t m_maxTrailSize;
 };
-
-#endif
